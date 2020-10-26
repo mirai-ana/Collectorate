@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Update information</title>
+	<style>
+		body{background-color: Lightblue;
+			color:Black;
+			background-size: cover;
+		    }
+		h1{
+			text-align: center;
+			font-family:Lucida Handwritting; 
+			position: absolute;
+            left: 400px;
+            top: 30px;
+		}
+		h4{
+			position: absolute;
+            left: 400px;
+            top: 100px;
+		}
+		table, th {
+			border: 1px solid black;
+		}
+		table{
+			background-color: White;
+		}
+		
+
+     </style>
+</head>
+<body>
+	<!--<h2><img src="/logo.jpg" width="300" height="400"></h2>-->
+	<form method="POST" action="/updateinfo">
+		<fieldset>
+			<legend>Select information to update</legend>
+			<label><input type="radio" name="voterid">Update Voter ID Information</input></label><br/>
+			<label><input type="radio" name="agricultureloan">Update Agriculture Loan Information</input></label><br/>
+			<label><input type="radio" name="civil">Update Construction and Civil Projects Information</input></label><br/>
+			<label><input type="radio" name="energy">Update Energy Bill Information</input></label><br/>
+			<label><input type="radio" name="newemployee">Update Employee Information</input></label><br/>
+			<label><input type="radio" name="collector">Update Collector Information</input></label><br/>
+		</fieldset>
+		<input type="submit" value="Enter details"/>
+	</form>
+</body>
+</html>
