@@ -16,7 +16,7 @@ file.close()
 
 #Database fields
 voterinfo=['collectorid', 'voterid', 'gender', 'first', 'middle', 'last', 'officerno', 'dob']
-vaddress=['locality', 'district', 'voterinfo']
+vaddress=['locality', 'district', 'voterid']
 agricultureloan=['collectorid', 'panid', 'customername', 'loanpurpose', 'amount', 'time', 'interest', 'start_date']
 civil=['collectorid','projectid','name','area','start_date','budget','constractorname','nooflaboureres']
 newemployee=['employeeid','name','e_email','password','contactno','dob','collectorid']
@@ -48,7 +48,7 @@ def home():
 @app.route("/signup")
 def signup():
     if request.method=="POST":
-        newemployeeform="("+request.form['employeeid'],request.form['name'],request.form['e_email'],request.form['password'],request.form['contactno'],request.form['dob'],request.form['collectorid']+")"
+        newemployeeform="("+request.form['employeeid']+",'"+request.form['name']+"','"+request.form['e_email']+"','"+request.form['password']+"',"+request.form['contactno']+","+request.form['dob']+","+request.form['collectorid']+")"
         return _insertinto('newemployee',"("+','.join(newemployee)+")",newemployeeform)
     return render_template("signup.html")
 
@@ -78,8 +78,8 @@ def login_get():
 @app.route("/voterid", methods=['GET','POST'])
 def voterid():
     if request.method=='POST':
-        voterinfoform="("+request.form['collectorid']+","+request.form['voterid']+","+request.form['gender']+","+request.form['first']+","+request.form['middle']+","+request.form['last']+","+request.form['officerno']+","+request.form['dob']+")"
-        vaddressform="("+request.form['locality']+","+request.form['district']+","+request.form['voterid']+")"
+        voterinfoform="("+request.form['collectorid']+",'"+request.form['voterid']+"','"+request.form['gender']+"','"+request.form['first']+"','"+request.form['middle']+"','"+request.form['last']+"',"+request.form['officerno']+","+request.form['dob']+")"
+        vaddressform="('"+request.form['locality']+"','"+request.form['district']+"','"+request.form['voterid']+"')"
         return _insertinto('voterinfo',"("+','.join(voterinfo)+")",voterinfoform)+"\n"+_insertinto('vaddress',"("+','.join(vaddress)+")",vaddressform)
     return render_template("voterid.html")
 
@@ -132,7 +132,8 @@ def favicon():
 def viewdata_post():
     dbd=sqlite3.connect(fdb)
     cur=dbd.cursor()
-    if request.form['tablename'].isspace() or request.form['entry'].isspace():
+    print(str(request.form))
+    if request.form['tablename'].isspace():
         return "Invalid table name or entry."
     if login()=="Authentication_success":
         cur.execute("SELECT * FROM "+request.form['tablename'])
@@ -169,11 +170,10 @@ def not_allowed(i):
 def _insertinto(tablename, sequence, values):
     dbd=sqlite3.connect(fdb)
     cur=dbd.cursor()
-    ret=cur.execute("insert into "+tablename+sequence+" values "+values)
-    print(tablename,sequence,values,sep="\n")
+    cur.execute("insert into "+tablename+sequence+" values "+values)
     dbd.commit()
     dbd.close()
-    return ret
-    
+    return "Value inserted"+values
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=2000)
