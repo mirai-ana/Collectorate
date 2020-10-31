@@ -14,6 +14,7 @@ file=open(fdb, mode='w')
 file.truncate(0)
 file.close()
 
+#Database fields
 voterinfo=['collectorid', 'voterid', 'gender', 'first', 'middle', 'last', 'officerno', 'dob']
 vaddress=['locality', 'district', 'voterinfo']
 agricultureloan=['collectorid', 'panid', 'customername', 'loanpurpose', 'amount', 'time', 'interest', 'start_date']
@@ -51,9 +52,8 @@ def signup():
         return _insertinto('newemployee',"("+','.join(newemployee)+")",newemployeeform)
     return render_template("signup.html")
 
-@app.route("/login", methods=["GET","POST"])
+@app.route("/login", methods=["POST"])
 def login():
-    if request.method=="POST":
         username=request.form['collectorid']
         password=request.form['password']
         if username== "" and password=="":
@@ -70,7 +70,9 @@ def login():
                     req.set_cookie('username',value=username)
                     return "Authentication_success"
             return "Invalid Credentials"
-    else:
+
+@app.route("/login", methods=["GET"])
+def login_get():
         return render_template("login.html")
 
 @app.route("/voterid", methods=['GET','POST'])
@@ -98,42 +100,52 @@ def civil():
 @app.route("/energy")
 def energy():
     if request.method=="POST":
-        energyform="("+req
+        energydeptform="("+","+request.form['collectorid']+","+request.form['customerid']+","+request.form['customername']+","+request.form['unitsconsumed']+")"
+        return _insertinto('energydept',"("+','.join(energydept)+")",enegydeptform)
     return render_template("energy.html")
+
+@app.route("/costperunit",methods=["GET"])
+def costperunit_get():
+    dbd=sqlite3.connect(fdb)
+    cur=dbd.cursor()
+    cur.execute("select * from costperunit")
+    res=cur.fetchall()
+    return str(res)
+
+@app.route("/setcostperunit",methods=["POST"])
+def costperunit_post():
+    if login()=="Authentication_success":
+        costperunitform="("+","+request.form['home']+","+request.form['industry']+","+request.form['commerical']+","+request.form['customerid']+")"
+        return _insertinto('costperunit',"("+','.join(costperunit)+")",costperunitform)
+    else:
+        return "Error 403"
+
+@app.route("/setcostperunit",methods=["POST"])
+def costperunit():
+    return render_template("cost.html")
 
 @app.route("/favicon.ico")
 def favicon():
-    return "IDK"
+    return "C"
 
-@app.route("/viewdata") #check creds
-def viewdata():
-    if request.method=='POST':
-        dbd=sqlite3.connect(fdb)
-        cur=dbd.cursor()
+@app.route("/viewdata", methods=["POST"])
+def viewdata_post():
+    dbd=sqlite3.connect(fdb)
+    cur=dbd.cursor()
+    if request.form['tablename'].isspace() or request.form['entry'].isspace():
+        return "Invalid table name or entry."
+    if login()=="Authentication_success":
         cur.execute("SELECT * FROM "+request.form['tablename'])
         return str(cur.fetchall())
-    #return render_template("dataview.html")
-    if request.cookies.get('username')==None:
-        return not_allowed("Error 403")
+    elif request.form['tablename']=="login":
+        return "Error 403"
+    else:
+        cur.execute("SELECT * FROM "+request.form['tablename']+" WHERE "+request.form['entry'])
+        return str(cur.fetchall())
+
+@app.route("/viewdata", methods=["GET"])
+def viewdata_get():
     return render_template("viewdata.html")
-    
-"""@app.route("/updateinfo")
-def confirm():
-    if request.method=="POST":
-        
-    return render_template("confirminfo.html")"""
-
-@app.route("/update")
-def update():
-    return render_template("update.html")
-    
-@app.route("/setlogin")
-def setlogin():
-    return render_template("setlogin.html")
-
-@app.route("/logout")
-def logout():
-    return render_template("logout.html")
     
 @app.route("/"+file_logo)
 def logo():
@@ -148,15 +160,17 @@ def css():
 @app.errorhandler(404)
 def page_not_found(i):
     return i
-    
+
 @app.errorhandler(403)
 def not_allowed(i):
     return i
 
+#Internal functions
 def _insertinto(tablename, sequence, values):
     dbd=sqlite3.connect(fdb)
     cur=dbd.cursor()
     ret=cur.execute("insert into "+tablename+sequence+" values "+values)
+    print(tablename,sequence,values,sep="\n")
     dbd.commit()
     dbd.close()
     return ret
