@@ -132,7 +132,6 @@ def favicon():
 def viewdata_post():
     dbd=sqlite3.connect(fdb)
     cur=dbd.cursor()
-    print(str(request.form))
     if request.form['tablename'].isspace():
         return "Invalid table name or entry."
     if login()=="Authentication_success":
@@ -142,7 +141,7 @@ def viewdata_post():
         return "Error 403"
     else:
         cur.execute("SELECT * FROM "+request.form['tablename']+" WHERE "+request.form['entry'])
-        return str(cur.fetchall())
+        return _tablise(request.form['tablename'],cur.fetchall())
 
 @app.route("/viewdata", methods=["GET"])
 def viewdata_get():
@@ -174,6 +173,51 @@ def _insertinto(tablename, sequence, values):
     dbd.commit()
     dbd.close()
     return "Value inserted"+values
+base="""
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Agricultural Loan</title>
+	<style>
+		body{background-color: Lightblue;
+			color:Black;
+			background-size: cover;
+		    }
+		h1{
+			text-align: center;
+			font-family:Lucida Handwritting; 
+			position: absolute;
+            left: 400px;
+            top: 30px;
+		}
+		h4{
+			position: absolute;
+            left: 400px;
+            top: 100px;
+		}
+		table, th {
+			border: 1px solid black;
+		}
+		table{
+			background-color: White;
+		}
+		
+
+     </style>
+</head>
+<body>
+	<h1><strong>Data View</strong></h1>
+
+"""
+def _tablise(table, table_entries):
+    tab=[]
+    for i in table:
+        tab.append("<td>"+"</td><td>".join(i)+"</td>")
+    thable='</tr><tr>'.join(tab)
+    thable=base+"<table><th>"+"</th><th>".join(table_entries)+"</th>"+table+"</table>"
+    print("Tablise")
+    print(thable)
+    return thable
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=2000)
