@@ -21,8 +21,28 @@ This was my first project using Flask so there are a *cough* LOT *cough* of unhe
 ## Vulnerabilites known ##
 - **Remote Code Execution**: The `debug` value of the app is set to `True` which allows for RCE on Flask apps as Flask opens a shell on the error page.
 - **Any unchecked input vulnerability**: SQL Injection, Cross-site scripting, basically any user input point can be exploited.
-- **Default admin password exposed**: I realized this after I committed the code here. No need to bother going through the code the default password is `el admino`.
+- **Default admin password exposed**: I realized this after I committed the code here. No need to bother going through the code the default username is `el admino` and password is `Bruh`.
 
+## I want to deploy it anyway ##
+
+Directory structure required
+```
+|-app.py
+|-templates
+  |-agriculture.html
+  |-civil.html
+  |-cost.html
+  |-dataview.html
+  |-energy.html
+  |-error.html
+  |-home.html
+  |-login.html
+  |-signup.html
+  |-update.html
+  |-viewdata.html
+  |-voterid.html
+  |-
+```
 ## To do ##
 - Add version numbers
 - Open security issues because why not :)
