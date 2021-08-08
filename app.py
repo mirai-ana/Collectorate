@@ -146,11 +146,12 @@ def viewdata_post():
 @app.route("/viewdata", methods=["GET"])
 def viewdata_get():
     return render_template("viewdata.html")
-    
+
+# The logo() and css() functions never worked :/
 @app.route("/"+file_logo)
 def logo():
     print("/"+file_logo)
-    return send_from_directory("D:\\Sem F2020\\DBMS\\perojeckt",file_logo)
+    return send_from_directory("/",file_logo)
 
 @app.route("/"+file_css)
 def css():
