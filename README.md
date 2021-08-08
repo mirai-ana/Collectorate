@@ -41,7 +41,6 @@ Directory structure required
   |-update.html
   |-viewdata.html
   |-voterid.html
-  |-
 ```
 ## To do ##
 - Add version numbers
