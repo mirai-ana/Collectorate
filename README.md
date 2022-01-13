@@ -2,7 +2,7 @@
 
 **Warning: This repository is unfit for production usage due to several security flaws.**
 
-This was a project I did in 2020 for my DBMS course at college.
+This was a project I did in 2020 for my DBMS course at my university.
 
 ## Dependencies ##
 - Flask
@@ -13,9 +13,9 @@ This was a project I did in 2020 for my DBMS course at college.
 
 It is a basic web form application that stores the responses to the database. No server-side input checks whatsoever. It is a security disaster and that's deliberate :) It has some hard-coded SQL to create and initialize the database because I could not get reading from file to work back in the days.
 
-## What is this repo anyway? ##
+## What is this repo? ##
 
-This was my first project using Flask so there are a *cough* LOT *cough* of unhealthy code there that I'm too unwilling to be fixing now. It's public to serve as an example of how not to code Flask applications. Please. Don't copy this for production. StackOverflow has better ones.
+It's public to serve as an example of **how not to code Flask applications**. Please. Don't copy this for production. StackOverflow should have better ones :)
 
 
 ## Vulnerabilites known ##
